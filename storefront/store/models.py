@@ -21,7 +21,7 @@ class Product (models.Model):
     slug = models.SlugField()
     description = models.TextField
     price = models.DecimalField(max_digits=6,decimal_places=2)
-    inventory = models.IntegerField
+    inventory = models.IntegerField()
     last_updated = models.DateTimeField(auto_now=True)
     collection = models.ForeignKey(Collection, on_delete=models.PROTECT,default='1')
     promotioms = models.ManyToManyField(Promotions)
@@ -31,6 +31,7 @@ class Product (models.Model):
 
     class Meta:
         ordering = ['title']
+
 
 class Customer (models.Model):
     MEMBERSHIP_BROWNZ = 'B'
@@ -49,6 +50,12 @@ class Customer (models.Model):
     phone = models.CharField(max_length=255)
     birth_date = models.DateField(null=True)
     member_ship = models.CharField(max_length=1,choices=MEMNERSHIP_CHOICES,default=MEMBERSHIP_BROWNZ)
+
+    def __str__(self):
+        return f'{self.first_name} {self.Last_name}'
+    
+    class Meta:
+        ordering = ['first_name','Last_name']
 
 class Order (models.Model):
     PAYMENT_PENDING = 'P'

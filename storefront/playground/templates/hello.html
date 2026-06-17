@@ -4,11 +4,11 @@
         <h1>Hello {{name}}</h1>
         {% else %}
         <h1>Hello World</h1>
-        {% endif %}
+        {% endif %} 
     </body>
     <ul>
         {% for order in orders %}
-        <li> {{ order.title }}</li>
-        {% endfor %}
+        <li>{{ order.first_name}}-{{order.total_prize}}</li>
+        {% endfor%}
     </ul>
 </html>
