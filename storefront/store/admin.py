@@ -1,9 +1,10 @@
-from django.contrib import admin
+from django.contrib import admin,messages
 from store import models
 from django.urls import reverse
 from django.utils.html import format_html, urlencode
 from store.models import Product,Collection,Order,Customer
 from django.db.models.aggregates import Count
+from tags.models import TaggedItem
 
 class inventory_filter(admin.SimpleListFilter):
     title = 'inventory'
@@ -18,7 +19,7 @@ class inventory_filter(admin.SimpleListFilter):
         if self.value() == '<5':
             return queryset.filter(inventory__lt=5)
     
-    
+
 
 
 @admin.register(models.Product)
@@ -33,6 +34,7 @@ class productAdmin(admin.ModelAdmin):
     list_editable = ['price']
     list_per_page = 15
     list_filter = ['collection','last_updated',inventory_filter]
+    search_fields = ['product']
 
     @admin.display(ordering='inventory')
     def inventry_status(self,Product):
@@ -84,8 +86,16 @@ class customerAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         return super().get_queryset(request).annotate(orders_count = Count('order'))
 
+class orderItemInline(admin.StackedInline):
+    autocomplete_fields = ['product']
+    model = models.OrderItem
+    extra = 0
+    
+
+
 @admin.register(Order)
 class orderAdmin(admin.ModelAdmin):
     autocomplete_fields = ['customer']
+    inlines = [orderItemInline]
     list_display = ['payment_status','placed_at','customer']
     

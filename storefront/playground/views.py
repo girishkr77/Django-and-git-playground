@@ -76,7 +76,14 @@ def helloword(request):
 
     # query_set = OrderItem.objects.filter(order__exact=2).aggregate(total_revenue = Sum('item_prize'))
 
-    query_set = Collection.objects.values('title').annotate(product_count = Count('product'))
+    # query_set = Collection.objects.values('title').annotate(product_count = Count('product'))
 
+    # query_set = Customer.objects.annotate(total_spending = Sum('order__orderitem__item_prize'))
 
-    return render(request,'hello.html',{'name':'jaibalaya','orders':query_set})
+    # query_set = Collection.objects.annotate(avg_price = Avg('product__price')).filter(avg_price__gt=20)
+
+    # query_set = Order.objects.values_list('id','customer__first_name','orderitem__id').distinct()
+
+    query_set = Product.objects.filter(inventory__lt= 'price'/2)
+
+    return render(request,'hello.html',{'name':'jaibalaya','orders':list(query_set)})
