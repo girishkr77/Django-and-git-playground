@@ -27,7 +27,7 @@ class Product (models.Model):
                                 ,validators=[MinValueValidator(1)])
     inventory = models.IntegerField()
     last_updated = models.DateTimeField(auto_now=True)
-    collection = models.ForeignKey(Collection, on_delete=models.PROTECT,default='1')
+    collection = models.ForeignKey(Collection, on_delete=models.PROTECT,default='1',related_name='products')
     promotions = models.ManyToManyField(Promotions,blank=True)
 
     def __str__(self):
@@ -88,7 +88,7 @@ class Address (models.Model):
 class OrderItem (models.Model):
     order = models.ForeignKey(Order,on_delete=models.PROTECT)
     quantity = models.PositiveSmallIntegerField()
-    product = models.ForeignKey(Product,on_delete=models.PROTECT)
+    product = models.ForeignKey(Product,on_delete=models.PROTECT,related_name='orderitems')
     item_prize = models.DecimalField(max_digits=6,decimal_places=2)
 
 
