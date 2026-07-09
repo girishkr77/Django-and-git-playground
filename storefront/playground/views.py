@@ -6,7 +6,7 @@ from tags.models import TaggedItem,taggedItemManager
 from django.db.models import Q,F,Value,Func,DecimalField
 from django.db.models.aggregates import Count,Max,Min,Avg,Sum
 from django.db.models.functions import Concat
-from django.db.models import ExpressionWrapper
+from django.db.models import ExpressionWrapper,Case,When,CharField
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 
@@ -84,6 +84,13 @@ def helloword(request):
 
     # query_set = Order.objects.values_list('id','customer__first_name','orderitem__id').distinct()
 
-    query_set = Product.objects.filter(inventory__lt= 'price'/2)
+    # query_set = Product.objects.filter(inventory__lt=F('price')/2)
+
+    # query_set = Product.objects.annotate(margin_tier=Case(When(price__gt=25, then=Value('High Margin', output_field=CharField())),default=Value('Standard Margin', output_field=CharField())))
+
+    # query_set = Product.objects.filter(Q(inventory__gt=30) | Q(price__gt=200)).exclude(collection=1)
+
+    query_set = Order.objects.order_by('-placed_at').filter(payment_status__iexact='F')
 
     return render(request,'hello.html',{'name':'jaibalaya','orders':list(query_set)})
+
