@@ -53,7 +53,7 @@ INTERNAL_IPS = [
     # ...
 ]
 
-MIDDLEWARE = [
+MIDDLEWARE = [ 
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

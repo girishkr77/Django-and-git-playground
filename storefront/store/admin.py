@@ -72,11 +72,12 @@ class collectionAdmin(admin.ModelAdmin):
 
 @admin.register(models.Customer)
 class customerAdmin(admin.ModelAdmin):
-    list_display = ['first_name','Last_name','member_ship','orders_count']
+    list_display = ['first_name','last_name','member_ship','orders_count']
     list_editable = ['member_ship']
     list_per_page = 10
-    ordering = ['first_name','Last_name']
-    search_fields = ['first_name__istartswith','Last_name__istartswith']
+    list_select_related = ['user']
+    ordering = ['user__first_name','user__last_name']
+    search_fields = ['first_name__istartswith','last_name__istartswith']
     
     @admin.display(ordering='orders_count')
     def orders_count(self,Customer):
