@@ -50,8 +50,8 @@ class Customer (models.Model):
         (MEMBERSHIP_GOLD,'GOLD')
 
     ]
-    email = models.EmailField(unique=True)
-    phone = models.CharField(max_length=255)
+    email = models.EmailField(unique=True, null=True)
+    phone = models.CharField(max_length=255,null=True)
     birth_date = models.DateField(null=True)
     member_ship = models.CharField(max_length=1,choices=MEMNERSHIP_CHOICES,default=MEMBERSHIP_BROWNZ)
     user = models.OneToOneField(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
@@ -67,6 +67,9 @@ class Customer (models.Model):
     
     class Meta:
         ordering = ['user__first_name','user__last_name']
+        permissions = [
+            ('view_history','can view history')
+        ]
 
 class Order (models.Model):
     PAYMENT_PENDING = 'P'
@@ -81,6 +84,11 @@ class Order (models.Model):
     placed_at = models.DateTimeField(auto_now_add=True)
     payment_status = models.CharField(max_length=1,choices=PAYMENT_LIST,default=PAYMENT_PENDING)
     customer = models.ForeignKey(Customer,on_delete=models.PROTECT)
+
+    class Meta:
+        permissions = [
+            ('cancel_order','can cancel the order')
+        ]
     
 
 class Address (models.Model):
@@ -93,9 +101,9 @@ class Address (models.Model):
     
 
 class OrderItem (models.Model):
-    order = models.ForeignKey(Order,on_delete=models.PROTECT)
+    order = models.ForeignKey(Order,on_delete=models.PROTECT,related_name='orderitems')
     quantity = models.PositiveSmallIntegerField()
-    product = models.ForeignKey(Product,on_delete=models.PROTECT,related_name='orderitems')
+    product = models.ForeignKey(Product,on_delete=models.PROTECT,related_name='product')
     item_prize = models.DecimalField(max_digits=6,decimal_places=2)
 
 
@@ -108,6 +116,7 @@ class CartItem (models.Model):
     quantity = models.PositiveSmallIntegerField(validators = [MinValueValidator(1)])
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE,related_name='carts')
     product = models.ForeignKey(Product,on_delete=models.CASCADE)
+    itemprice = models.DecimalField(max_digits=6,decimal_places=2)
 
     class Meta:
         unique_together = [['cart','product']]
